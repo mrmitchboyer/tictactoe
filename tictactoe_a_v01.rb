@@ -1,13 +1,15 @@
-# set all of the squares to " "
-@a1 = " "
-@a2 = " "
-@a3 = " "
-@b1 = " "
-@b2 = " "
-@b3 = " "
-@c1 = " "
-@c2 = " "
-@c3 = " "
+def clear_board
+  # set all of the squares to " "
+  @a1 = " "
+  @a2 = " "
+  @a3 = " "
+  @b1 = " "
+  @b2 = " "
+  @b3 = " "
+  @c1 = " "
+  @c2 = " "
+  @c3 = " "
+end
 
 def print_grid
   puts
@@ -158,12 +160,28 @@ def comp_move
   end
 end
 
+def play_again?
+  puts "Would you like to play again? (y/n)"
+  play_again_answer = gets.chomp.downcase
+  if play_again_answer == "y" or play_again_answer == "yes"
+    game_engine()
+  elsif play_again_answer == "n" or play_again_answer == "no"
+    puts "Thanks for playing!"
+    exit
+  else
+    puts "Didn't understand that..."
+    play_again?()
+  end
+end
+
 def player_wins
   puts "You win!"
+  play_again?()
 end
 
 def computer_wins
   puts "The computer wins!"
+  play_again?()
 end
 
 def winner?
@@ -189,7 +207,7 @@ def winner?
 end
 
 def game_over?
-  # Check to see how many squared are filled
+  # Check to see how many squares are filled
   @tally = 0
   squares = [@a1, @a2, @a3, @b1, @b2, @b3, @c1, @c2, @c3]
   squares.each do |s|
@@ -203,25 +221,22 @@ def game_over?
   # see if there is a winner
   if winner?() == 1
     player_wins()
-    exit
   elsif winner?() == 2
     computer_wins()
-    exit
   elsif @tally == 9
     puts "Cats Game!"
-    exit
+    play_again?()
   else
   end
 end
 
-
-
 def game_engine
+  clear_board()
   while "velociraptor" > "T-Rex"
+    print_grid()
     user_move()
     print_grid()
     comp_move()
-    print_grid()
   end
 end
 
@@ -231,5 +246,4 @@ puts"
 |        TIC TAC TOE        |
 +---------------------------+"
 
-print_grid()
 game_engine()
