@@ -25,9 +25,9 @@ end
 
 def valid_move? square_contents
   if square_contents == " "
-    return true
+    true
   else
-    return false
+    false
   end
 end
 
@@ -100,63 +100,12 @@ def user_move
 end
 
 def comp_move
-  r = rand(8)
-  if r == 0
-    if valid_move?(@a1)
-      @a1 = "O"
-    else
-      comp_move() 
+  squares = [@a1, @a2, @a3, @b1, @b2, @b3, @c1, @c2, @c3]
+  squares.shuffle.each do |square|
+    if valid_move?(square)
+      square.sub!(/[ ]/, "O")
+      break
     end
-  elsif r == 1
-    if valid_move?(@a2)
-      @a2 = "O"
-    else
-      comp_move() 
-    end
-  elsif r == 2
-    if valid_move?(@a3)
-      @a3 = "O"
-    else
-      comp_move() 
-    end
-  elsif r == 3
-    if valid_move?(@b1)
-      @b1 = "O"
-    else
-      comp_move() 
-    end
-  elsif r == 4
-    if valid_move?(@b2)
-      @b2 = "O"
-    else
-      comp_move() 
-    end
-  elsif r == 5
-    if valid_move?(@b3)
-      @b3 = "O"
-    else
-      comp_move() 
-    end
-  elsif r == 6
-    if valid_move?(@c1)
-      @c1 = "O"
-    else
-      comp_move() 
-    end
-  elsif r == 7
-    if valid_move?(@c2)
-      @c2 = "O"
-    else
-      comp_move() 
-    end
-  elsif r == 8
-    if valid_move?(@c3)
-      @c3 = "O"
-    else
-      comp_move() 
-    end
-  else
-    comp_move()
   end
 end
 
@@ -174,13 +123,12 @@ def play_again?
   end
 end
 
-def player_wins
-  puts "You win!"
-  play_again?()
-end
-
-def computer_wins
-  puts "The computer wins!"
+def the_winner_is winner
+  if winner == 'player'
+    puts "You win!"
+  elsif winner == 'computer'
+    puts "The computer wins!"
+  end 
   play_again?()
 end
 
@@ -220,9 +168,9 @@ def game_over?
 
   # see if there is a winner
   if winner?() == 1
-    player_wins()
+    the_winner_is('player')
   elsif winner?() == 2
-    computer_wins()
+    the_winner_is('computer')
   elsif @tally == 9
     puts "Cats Game!"
     play_again?()
