@@ -1,5 +1,4 @@
 def clear_board
-  # set all of the squares to " "
   @a1 = " "
   @a2 = " "
   @a3 = " "
@@ -9,6 +8,23 @@ def clear_board
   @c1 = " "
   @c2 = " "
   @c3 = " "
+end
+
+def squares
+  squares = [@a1, @a2, @a3, @b1, @b2, @b3, @c1, @c2, @c3]
+  return squares
+end
+
+def win_combos
+  win_combos = [[@a1, @a2, @a3],
+                [@a1, @b2, @c3],
+                [@a1, @b1, @c1],
+                [@b1, @b2, @b3],
+                [@c1, @c2, @c3],
+                [@c1, @b2, @a3],
+                [@a2, @b2, @c2],
+                [@a3, @b3, @c3]]
+  return win_combos
 end
 
 def print_grid
@@ -37,74 +53,37 @@ def invalid_move
 end
 
 def user_move
+  user_choice_hash = {"a1" => @a1,
+                      "a2" => @a2,
+                      "a3" => @a3,
+                      "b1" => @b1,
+                      "b2" => @b2,
+                      "b3" => @b3,
+                      "c1" => @c1,
+                      "c2" => @c2,
+                      "c3" => @c3}
+
   puts "Please choose a square:"
   user_choice = gets.chomp.downcase
+  # get the move count so we can use it later
+  move_count = tally_count()
 
-  if user_choice == "a1"
-    if valid_move?(@a1)
-      @a1 = "X"
-    else
-      invalid_move() 
+  user_choice_hash.each do |choice, square|
+    if user_choice == choice
+      if valid_move?(square)
+        square.sub!(/[ ]/, "X") 
+      end
     end
-  elsif user_choice == "a2"
-    if valid_move?(@a2)
-      @a2 = "X"
-    else
-      invalid_move() 
-    end
-  elsif user_choice == "a3"
-    if valid_move?(@a3)
-      @a3 = "X"
-    else
-      invalid_move() 
-    end
-  elsif user_choice == "b1"
-    if valid_move?(@b1)
-    @b1 = "X"
-    else
-      invalid_move() 
-    end
-  elsif user_choice == "b2"
-    if valid_move?(@b2)
-    @b2 = "X"
-    else
-      invalid_move() 
-    end
-  elsif user_choice == "b3"
-    if valid_move?(@b3)
-    @b3 = "X"
-    else
-      invalid_move() 
-    end
-  elsif user_choice == "c1"
-    if valid_move?(@c1)
-    @c1 = "X"
-    else
-      invalid_move() 
-    end
-  elsif user_choice == "c2"
-    if valid_move?(@c2)
-    @c2 = "X"
-    else
-      invalid_move() 
-    end
-  elsif user_choice == "c3"
-    if valid_move?(@c3)
-    @c3 = "X"
-    else
-      invalid_move() 
-    end
-  else
-    invalid_move() 
+  end 
+  # check to see if it was a valid move
+  if move_count == tally_count()
+    invalid_move()
   end
   @turn_count += 1
 end
 
-# COMPUTER MOVE
-
-def random_square
-  squares = [@a1, @a2, @a3, @b1, @b2, @b3, @c1, @c2, @c3]
-  squares.shuffle.each do |square|
+def comp_random
+  squares().shuffle.each do |square|
     if valid_move?(square)
       square.sub!(/[ ]/, "O")
       break
@@ -113,24 +92,15 @@ def random_square
 end
 
 def comp_win
-  win_combos = [[@a1, @a2, @a3],
-                [@a1, @b2, @c3],
-                [@a1, @b1, @c1],
-                [@b1, @b2, @b3],
-                [@c1, @c2, @c3],
-                [@c1, @b2, @a3],
-                [@a2, @b2, @c2],
-                [@a3, @b3, @c3]]
-
-  win_combos.each do |combos|
-    # check to see if you can win
-    if combos[0] == "O" && combos[1] == "O" && combos[2] != "X"
+  win_combos().each do |combos|
+    # check to see if the computer can win
+    if combos[0] == "O" && combos[1] == "O" && combos[2] == " "
       combos[2].sub!(/[ ]/, "O") 
       break
-    elsif combos[0] == "O" && combos[2] == "O" && combos[1] != "X"
+    elsif combos[0] == "O" && combos[2] == "O" && combos[1] == " "
       combos[1].sub!(/[ ]/, "O") 
       break
-    elsif combos[1] == "O" && combos[2] == "O" && combos[0] != "X"
+    elsif combos[1] == "O" && combos[2] == "O" && combos[0] == " "
       combos[0].sub!(/[ ]/, "O") 
       break
     end
@@ -138,51 +108,36 @@ def comp_win
 end
 
 def comp_block
-  win_combos = [[@a1, @a2, @a3],
-                [@a1, @b2, @c3],
-                [@a1, @b1, @c1],
-                [@b1, @b2, @b3],
-                [@c1, @c2, @c3],
-                [@c1, @b2, @a3],
-                [@a2, @b2, @c2],
-                [@a3, @b3, @c3]]
-                
-  win_combos.each do |combos|
-    # check to see if you can win
-    if combos[0] == "X" && combos[1] == "X" && combos[2] != "O"
+  win_combos().each do |combos|
+    # check to see if the computer can block the player
+    if combos[0] == "X" && combos[1] == "X" && combos[2] == " "
       combos[2].sub!(/[ ]/, "O")
       break
-    elsif combos[0] == "X" && combos[2] == "X" && combos[1] != "O"
+    elsif combos[0] == "X" && combos[2] == "X" && combos[1] == " "
       combos[1].sub!(/[ ]/, "O")
       break
-    elsif combos[1] == "X" && combos[2] == "X" && combos[0] != "O"
+    elsif combos[1] == "X" && combos[2] == "X" && combos[0] == " "
       combos[0].sub!(/[ ]/, "O")
       break
     end
   end
 end
 
-
 def comp_move
-  # check to see if it should start trying
+  # check to see if the computer should start trying
   if @turn_count > 1
-    tally_count()
-    @tc = @tally
+    @tc = tally_count()
     comp_win()
-    tally_count()
-    if @tc == @tally
+    if @tc == tally_count()
       comp_block()
-      tally_count()
-      if @tc == @tally
-        random_square()
+      if @tc == tally_count()
+        comp_random()
       end
     end
   else
-    random_square()
+    comp_random()
   end
 end
-
-# END COMPUTER MOVE
 
 def play_again?
   puts "Would you like to play again? (y/n)"
@@ -208,53 +163,42 @@ def the_winner_is winner
 end
 
 def winner?
-  win_combos = [[@a1, @a2, @a3],
-                [@a1, @b2, @c3],
-                [@a1, @b1, @c1],
-                [@b1, @b2, @b3],
-                [@c1, @c2, @c3],
-                [@c1, @b2, @a3],
-                [@a2, @b2, @c2],
-                [@a3, @b3, @c3]]
-
-  win_combos.each do |combos|
+  win_combos().each do |combos|
     if combos[0] == "X" && combos[1] == "X" && combos[2] == "X"
       # player_wins()
       return 1
     elsif combos[0] == "O" && combos[1] == "O" && combos[2] == "O"
       # computer_wins()
       return 2
-    else
     end
   end
 end
 
 def tally_count
-  # Check to see how many squares are filled
-  @tally = 0
-  squares = [@a1, @a2, @a3, @b1, @b2, @b3, @c1, @c2, @c3]
-  squares.each do |s|
+  tally = 0
+  squares().each do |s|
     if s == " "
-      @tally += 0
+      tally += 0
     else
-      @tally += 1
+      tally += 1
     end
   end
+  return tally
 end
 
 def game_over?
+  # Check to see how many squares are filled
   tally_count()
   # see if there is a winner
   if winner?() == 1
     the_winner_is('player')
   elsif winner?() == 2
     the_winner_is('computer')
-  elsif @tally == 9
+  elsif tally_count() == 9
     puts "Cats Game!"
     play_again?()
   else
   end
-  @tally
 end
 
 def game_engine
