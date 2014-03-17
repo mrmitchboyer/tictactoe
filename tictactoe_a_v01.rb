@@ -97,9 +97,12 @@ def user_move
   else
     invalid_move() 
   end
+  @turn_count += 1
 end
 
-def comp_move
+# COMPUTER MOVE
+
+def random_square
   squares = [@a1, @a2, @a3, @b1, @b2, @b3, @c1, @c2, @c3]
   squares.shuffle.each do |square|
     if valid_move?(square)
@@ -108,6 +111,78 @@ def comp_move
     end
   end
 end
+
+def comp_win
+  win_combos = [[@a1, @a2, @a3],
+                [@a1, @b2, @c3],
+                [@a1, @b1, @c1],
+                [@b1, @b2, @b3],
+                [@c1, @c2, @c3],
+                [@c1, @b2, @a3],
+                [@a2, @b2, @c2],
+                [@a3, @b3, @c3]]
+
+  win_combos.each do |combos|
+    # check to see if you can win
+    if combos[0] == "O" && combos[1] == "O" && combos[2] != "X"
+      combos[2].sub!(/[ ]/, "O") 
+      break
+    elsif combos[0] == "O" && combos[2] == "O" && combos[1] != "X"
+      combos[1].sub!(/[ ]/, "O") 
+      break
+    elsif combos[1] == "O" && combos[2] == "O" && combos[0] != "X"
+      combos[0].sub!(/[ ]/, "O") 
+      break
+    end
+  end
+end
+
+def comp_block
+  win_combos = [[@a1, @a2, @a3],
+                [@a1, @b2, @c3],
+                [@a1, @b1, @c1],
+                [@b1, @b2, @b3],
+                [@c1, @c2, @c3],
+                [@c1, @b2, @a3],
+                [@a2, @b2, @c2],
+                [@a3, @b3, @c3]]
+                
+  win_combos.each do |combos|
+    # check to see if you can win
+    if combos[0] == "X" && combos[1] == "X" && combos[2] != "O"
+      combos[2].sub!(/[ ]/, "O")
+      break
+    elsif combos[0] == "X" && combos[2] == "X" && combos[1] != "O"
+      combos[1].sub!(/[ ]/, "O")
+      break
+    elsif combos[1] == "X" && combos[2] == "X" && combos[0] != "O"
+      combos[0].sub!(/[ ]/, "O")
+      break
+    end
+  end
+end
+
+
+def comp_move
+  # check to see if it should start trying
+  if @turn_count > 1
+    tally_count()
+    @tc = @tally
+    comp_win()
+    tally_count()
+    if @tc == @tally
+      comp_block()
+      tally_count()
+      if @tc == @tally
+        random_square()
+      end
+    end
+  else
+    random_square()
+  end
+end
+
+# END COMPUTER MOVE
 
 def play_again?
   puts "Would you like to play again? (y/n)"
@@ -154,7 +229,7 @@ def winner?
   end
 end
 
-def game_over?
+def tally_count
   # Check to see how many squares are filled
   @tally = 0
   squares = [@a1, @a2, @a3, @b1, @b2, @b3, @c1, @c2, @c3]
@@ -165,7 +240,10 @@ def game_over?
       @tally += 1
     end
   end
+end
 
+def game_over?
+  tally_count()
   # see if there is a winner
   if winner?() == 1
     the_winner_is('player')
@@ -176,9 +254,11 @@ def game_over?
     play_again?()
   else
   end
+  @tally
 end
 
 def game_engine
+  @turn_count = 0
   clear_board()
   while "velociraptor" > "T-Rex"
     print_grid()
