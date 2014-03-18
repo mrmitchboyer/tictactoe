@@ -1,5 +1,5 @@
-# Tic Tac Toe
+# Jurassic Park Tic Tac Toe
 
-A "Tic Tac Toe" Ruby app for my application to [*Flatiron School*](http://flatironschool.com)
+A *Jurassic Park* themed "tic tac toe" Ruby app for my application to [Flatiron School](http://flatironschool.com).
 
 by [Mitch Boyer](http://mitchboyer.com)
