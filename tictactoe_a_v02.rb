@@ -99,14 +99,14 @@ def comp_move
     comp_win()
     if move_count == tally_count()
       comp_block()
-      block_user?() if move_count == tally_count()
+      block_middle_x?() if move_count == tally_count()
     end
   else
-    block_user?()
+    block_middle_x?()
   end
 end
 
-def block_user?
+def block_middle_x?
   computer_block_array = [@a1, @a3, @c1, @c3]
   if @turn_count < 3
     if @b2 == "X"
