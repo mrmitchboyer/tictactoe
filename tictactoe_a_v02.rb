@@ -52,6 +52,15 @@ end
 
 # MOVES
 
+def shuffle_squares array
+  array.shuffle.each do |square|
+    if valid_move?(square)
+      square.sub!(/ /, "O")
+      break
+    end
+  end
+end
+
 def valid_move? square_contents
   true if square_contents == " "
 end
@@ -107,27 +116,15 @@ def comp_move
 end
 
 def block_middle_x?
-  computer_block_array = [@a1, @a3, @c1, @c3]
+  middle_x_block_array = [@a1, @a3, @c1, @c3]
   if @turn_count < 3
     if @b2 == "X"
-        computer_block_array.shuffle.each do |square|
-        if valid_move?(square)
-          square.sub!(/ /, "O")
-          break
-        end
-      end
+        shuffle_squares(middle_x_block_array)
     else
-      comp_random()
+      shuffle_squares(squares)
     end
-  end
-end
-
-def comp_random
-  squares().shuffle.each do |square|
-    if valid_move?(square)
-      square.sub!(/ /, "O")
-      break
-    end
+  else
+    shuffle_squares(squares)
   end
 end
 
